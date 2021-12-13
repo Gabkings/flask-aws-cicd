@@ -1,42 +1,53 @@
 from flask import Flask, jsonify
-
+import boto3
 
 application = Flask(__name__)
 
-ids = ['i-0ed3e619a2a32601a']
+ids = 'i-0ed3e619a2a32601a'
 
-conn = boto.ec2.connect_to_region('us-west-2')
+AWS_REGION = "us-west-2"
+
+EC2_RESOURCE = boto3.resource('ec2', region_name=AWS_REGION)
 
 
 @application.route("/tags")
 def show_tags():
-    # Find a specific instance, returns a list of Reservation objects
-    reservations = conn.get_all_instances(instance_ids= ids)
-    # Find the Instance object inside the reservation
-    instance = reservations[0].instances[0]
-    return jsonify({"tags":instance.tags})
+    instances = EC2_RESOURCE.instances.filter(InstanceIds=[ids,],)
+    instance_tags = []
+    for instance in instances:
+        print(f'EC2 instance {instance.id} tags:')
+    if len(instance.tags) > 0:
+        for tag in instance.tags:
+            instance_tags.append({tag["Key"]: tag["Value"]})
+        return jsonify({"tags": instance_tags})
+    else:
+        return jsonify({"tags" : " No Tags"})
 
 
 @application.route("/shutdown")
 def shutdown_ec2():
-    # Find a specific instance, returns a list of Reservation objects
-    reservations = conn.stop_instances(instance_ids= ids)
-    instances = con.get_all_reservations(filters={'instance-state-name': 'running'})
-    instance_status = []
-    for instance in instances:
-        instance_status.append({instance.id: instance.instance_type})
-    return jsonify({"instances_status": instance_status})
+    instance = EC2_RESOURCE.Instance(ids)
+    instance.stop()
+    print(f'Stopping EC2 instance: {instance.id}')  
+    instance.wait_until_stopped()
+    print(f"EC2 instance {instance.id} has been stopped")
+    return jsonify({"message": f"EC2 instance with id {instance.id} has been stopped"})
+
     
 
 @application.route("/start")
-def shutdown_ec2():
-    # Find a specific instance, returns a list of Reservation objects
-    reservations = conn.start_instances(instance_ids= ids)
-    instances = con.get_all_reservations(filters={'instance-state-name': 'running'})
-    instance_status = []
-    for instance in instances:
-        instance_status.append({instance.id: instance.instance_type})
-    return jsonify({"instances_status": instance_status})
+def start_ec2():
+    instance = EC2_RESOURCE.Instance(ids)
+
+    instance.start()
+
+    print(f'Starting EC2 instance: {instance.id}')
+        
+    instance.wait_until_running()
+
+    print(f" EC2 instance {instance.id} has been started")
+
+    return jsonify({"message ": f" EC2 instance with id {instance.id} has been started"})
 
 @application.route("/")
 def index():
