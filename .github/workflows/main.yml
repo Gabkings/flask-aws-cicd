@@ -71,7 +71,7 @@ jobs:
           # Assuming the Deployment Group is already setup
           aws deploy create-deployment \
             --application-name flask-app \
-            --deployment-group-name flask-app \
+            --deployment-group-name flask-group \
             --deployment-config-name CodeDeployDefault.OneAtATime \
             --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
 
