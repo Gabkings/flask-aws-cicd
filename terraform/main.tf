@@ -72,4 +72,3 @@ resource "aws_s3_bucket" "b" {
     max_age_seconds = 3000
   }
 }
-

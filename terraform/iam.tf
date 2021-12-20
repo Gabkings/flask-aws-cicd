@@ -6,7 +6,7 @@ resource "aws_iam_role" "test_role" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Action": "sts:AssumeRole",
+      "Action":"sts:AssumeRole",
       "Principal": {
         "Service": ["ec2.amazonaws.com",
          "codedeploy.us-east-2.amazonaws.com",
@@ -61,15 +61,15 @@ resource "aws_codedeploy_deployment_group" "example" {
 
   ec2_tag_set {
     ec2_tag_filter {
-      key   = "filterkey1"
+      key   = "Name"
       type  = "KEY_AND_VALUE"
-      value = "filtervalue"
+      value = "Flugel"
     }
 
     ec2_tag_filter {
-      key   = "filterkey2"
+      key   = "Owner"
       type  = "KEY_AND_VALUE"
-      value = "filtervalue"
+      value = "InfraTeam"
     }
   }
 
