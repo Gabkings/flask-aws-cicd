@@ -69,11 +69,7 @@ jobs:
         id: deploy
         run: |
           # Assuming the Deployment Group is already setup
-          aws deploy create-deployment \
-            --application-name flask-app \
-            --deployment-group-name flask-group \
-            --deployment-config-name CodeDeployDefault.OneAtATime \
-            --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
+          aws deploy create-deployment --application-name flask-app --deployment-group-name flask-group  --deployment-config-name CodeDeployDefault.OneAtATime --github-location repository=${{ github.repository }},commitId=${{ github.sha }}
 
       - name: Print nice message on completion of CD Pipeline
         run: echo "CD Pipeline part finished successfully"
