@@ -3,7 +3,7 @@ import boto3
 
 application = Flask(__name__)
 
-ids = 'i-0ed3e619a2a32601a'
+ids = 'i-02ce26d23ed3ca2c8'
 
 AWS_REGION = "us-west-2"
 
